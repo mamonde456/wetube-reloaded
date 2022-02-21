@@ -1,5 +1,4 @@
 import Video from "../models/Video";
-Video.find({}, (error, videos) => {});
 
 export const home = async (req, res) => {
   try {
