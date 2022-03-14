@@ -1,22 +1,17 @@
 extends base
 
 block content 
-    div.form_wrap
+    div.form_wrap.margin_top
         if errorMessage 
             span=errorMessage
         form(method="POST")
             input(name="username", type="text", required, placeholder="Username")
             input(name="password", type="password", required, placeholder="Password")
             input(type="submit", value="Join", id="form_btn")
-            hr
-            a.github_login(href="/users/github/start") 
-                i.fab.fa-github
-                span  Continue with Github &rarr;
-
-    hr
-    div.login_text
-        span Don't have an account?
-        a(href="/join") create one now &rarr;
+            include partials/social-login
+        div.auth-switch
+            span Don't have an account?
+            a(href="/join") create one now &rarr;
 
 
 

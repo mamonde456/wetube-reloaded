@@ -5,12 +5,16 @@
 //components
 @import "./components/header.scss";
 @import "./components/footer.scss";
+@import "./components/shared.scss";
 @import "./components/video.scss";
-@import "./components/search.scss";
 @import "./components/form.scss";
+@import "./components/social-login.scss";
 
 //screen
 @import "./screens/home.scss";
+@import "./screens/search.scss";
+@import "./screens/profile.scss";
+@import "./screens/edit-profile.scss";
 
 // defaults
 a {
@@ -29,6 +33,7 @@ body {
 main {
   max-width: 1200px;
   width: 100%;
+  // height: auto;
   min-height: 400px;
   margin: 0px auto;
   margin-bottom: 20px;

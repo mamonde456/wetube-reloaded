@@ -7,9 +7,9 @@ block content
             input(placeholder="Search by title", name="keyword", type="text", id="search")
             input(type="submit", value="Search now",id="search_btn")
 
-        div
+        div.video_grid
             each video in videos 
                 div.video_data
                     +video(video)
             else 
-                div.no_video Sorry nothing found.
+                div.empty__message Sorry nothing found.

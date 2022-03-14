@@ -1,5 +1,4 @@
 import User from "../models/User";
-import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
@@ -13,7 +12,6 @@ export const postJoin = async (req, res) => {
       errorMessage: "Password confirmation does not match.",
     });
   }
-
   const exists = await User.exists({ $or: [{ username }, { email }] });
   if (exists) {
     return res.status(400).render("join", {
@@ -21,7 +19,6 @@ export const postJoin = async (req, res) => {
       errorMessage: "This username/email is already taken.",
     });
   }
-
   try {
     await User.create({
       name,
@@ -33,14 +30,13 @@ export const postJoin = async (req, res) => {
     return res.redirect("/login");
   } catch (error) {
     return res.status(400).render("join", {
-      pageTitle: "Upload video",
-      errorMessage: error._errorMessage,
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
     });
   }
 };
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
-
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
@@ -55,14 +51,13 @@ export const postLogin = async (req, res) => {
   if (!ok) {
     return res.status(400).render("login", {
       pageTitle,
-      errorMessage: "Wrong password.",
+      errorMessage: "Wrong password",
     });
   }
   req.session.loggedIn = true;
   req.session.user = user;
   return res.redirect("/");
 };
-
 export const startGithubLogin = (req, res) => {
   const baseUrl = "https://github.com/login/oauth/authorize";
   const config = {
@@ -74,7 +69,6 @@ export const startGithubLogin = (req, res) => {
   const finalUrl = `${baseUrl}?${params}`;
   return res.redirect(finalUrl);
 };
-
 export const finishGithubLogin = async (req, res) => {
   const baseUrl = "https://github.com/login/oauth/access_token";
   const config = {
@@ -92,7 +86,6 @@ export const finishGithubLogin = async (req, res) => {
       },
     })
   ).json();
-
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest;
     const apiUrl = "https://api.github.com";
@@ -103,7 +96,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -115,23 +107,24 @@ export const finishGithubLogin = async (req, res) => {
       (email) => email.primary === true && email.verified === true
     );
     if (!emailObj) {
+      // set notification
       return res.redirect("/login");
     }
     let user = await User.findOne({ email: emailObj.email });
     if (!user) {
-      const user = await User.create({
+      user = await User.create({
         avatarUrl: userData.avatar_url,
-        name: userData.name ? userData.name : "Unknown",
+        name: userData.name,
         username: userData.login,
         email: emailObj.email,
         password: "",
         socialOnly: true,
         location: userData.location,
       });
-      req.session.loggedIn = true;
-      req.session.user = user;
-      return res.redirect("/");
     }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
@@ -140,38 +133,21 @@ export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
-
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id, avatarUrl, email: sessionEmail, username: sessionUsername },
+      user: { _id, avatarUrl },
     },
-    body: { name, email, username, location, file },
+    body: { name, email, username, location },
+    file,
   } = req;
-  let searchParam = [];
-  if (sessionEmail !== email) {
-    searchParam.push({ email });
-  }
-  if (sessionUsername !== username) {
-    searchParam.push({ username });
-  }
-  if (searchParam.length > 0) {
-    const foundUser = await User.findOne({ $or: searchParam });
-    if (foundUser && foundUser._id.toString() !== _id) {
-      return res.status(400).render("edit-profile", {
-        pageTitle: "Edit Profile",
-        errorMessage: "This username/email is a already taken.",
-      });
-    }
-  }
-  const isHeroku = process.env.NODE_ENV === "production";
-  const updateUser = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
-      avatarUrl: file ? (isHeroku ? file.location : file.path) : avatarUrl,
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -179,17 +155,15 @@ export const postEdit = async (req, res) => {
     },
     { new: true }
   );
-  req.session.user = updateUser;
+  req.session.user = updatedUser;
   return res.redirect("/users/edit");
 };
-
 export const getChangePassword = (req, res) => {
   if (req.session.user.socialOnly === true) {
     return res.redirect("/");
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
 };
-
 export const postChangePassword = async (req, res) => {
   const {
     session: {
@@ -199,40 +173,37 @@ export const postChangePassword = async (req, res) => {
   } = req;
   const user = await User.findById(_id);
   const ok = await bcrypt.compare(oldPassword, user.password);
-  if (oldPassword === newPassword) {
-    return res.status(400).render("users/change-password", {
-      pageTitle: "Change password",
-      errorMessage: "The old password equals new password",
-    });
-  }
   if (!ok) {
-    // req.flash("error","Can't change password.")
     return res.status(400).render("users/change-password", {
-      pageTitle: "Change password",
+      pageTitle: "Change Password",
       errorMessage: "The current password is incorrect",
     });
   }
   if (newPassword !== newPasswordConfirmation) {
-    return res.status(400).render("user/change-password", {
+    return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The password does not match the confirmation",
     });
   }
   user.password = newPassword;
   await user.save();
-  req.session.destroy();
-  return res.redirect("/login");
+  return res.redirect("/users/logout");
 };
+
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id).populate("videos");
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
   if (!user) {
-    return res.status(404).render("404", { pageTitle: "User not found" });
+    return res.status(404).render("404", { pageTitle: "User not found." });
   }
-  const videos = await Video.find({ owner: user._id });
   return res.render("users/profile", {
-    pageTitle: `${user.name} profile`,
+    pageTitle: user.name,
     user,
-    videos,
   });
 };

@@ -1,12 +1,11 @@
 .video_mixin {
-  a {
-    display: block;
-    .video_data {
-      border-radius: 5px;
-      height: 150px;
-      margin-bottom: 10px;
-      background: white;
-    }
+  display: block;
+  .video_data {
+    border-radius: 5px;
+    height: 150px;
+    margin-bottom: 10px;
+    background: white;
+
     .video_text {
       padding: 0px 10px;
       .video_title {

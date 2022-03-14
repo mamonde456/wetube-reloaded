@@ -1,15 +1,9 @@
 mixin video(video)
- div.video_mixin
-    a(href=`/videos/${video.id}`)
+    a(href=`/videos/${video.id}`).video_mixin
         div.video_data
         div.video_text
             span.video_title=video.title
-            div 
-                span #{video.owner.name} • 
-                span #{video.meta.views}회
-                //- p=video.description
-                //- ul 
-                //-     each hashtag in video.hashtags
-                //-         li=hashtag
+            div
+                span #{video.owner.name || user.username} • 
+                span #{video.meta.views} 회 
                 span.video_at=video.createdAt
-                //- hr
