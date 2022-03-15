@@ -1,9 +1,9 @@
 import express from "express";
 import {
   watch,
+  getUpload,
   getEdit,
   postEdit,
-  getUpload,
   postUpload,
   deleteVideo,
 } from "../controllers/videoController";

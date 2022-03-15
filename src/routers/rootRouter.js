@@ -10,8 +10,6 @@ import { publicOnlyMiddleware } from "../middlewares";
 
 const rootRouter = express.Router();
 
-// const handleHome = (req, res) => res.send("Home");
-
 rootRouter.get("/", home);
 rootRouter.route("/join").all(publicOnlyMiddleware).get(getJoin).post(postJoin);
 rootRouter
