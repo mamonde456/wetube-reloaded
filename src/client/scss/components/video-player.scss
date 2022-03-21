@@ -7,19 +7,31 @@ div#videoContainer {
     width: 100%;
   }
   #videoControls {
-    opacity: 0.5;
+    opacity: 0;
     -webkit-transition: 0.5 ease-in-out;
     &.showing {
       opacity: 1;
     }
-    width: 1150px;
-    height: 50px;
-    background: rgba($color: #000000, $alpha: 0.8);
-    border-radius: 15px;
+    width: 100%;
+    height: 100px;
+    // background:
+    background: #000000; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to top,
+      rgba($color: #000000, $alpha: 1),
+      rgba($color: #000000, $alpha: 0)
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to top,
+      rgba($color: #000000, $alpha: 1),
+      rgba($color: #000000, $alpha: 0)
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    // border-radius: 15px;
     position: absolute;
     left: 50%;
-    margin-left: -575px;
-    bottom: 10px;
+    margin-left: -50%;
+    bottom: 0px;
     display: flex;
     align-items: center;
 

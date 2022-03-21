@@ -84,7 +84,7 @@ const handleFullscreen = () => {
 const hideControls = () => videoControls.classList.remove("showing");
 
 const handleMouseMove = () => {
-  if (controlTimeout) {
+  if (controlTimeout === true) {
     clearTimeout(controlTimeout);
     controlTimeout = null;
   }
@@ -97,6 +97,10 @@ const handleMouseMove = () => {
   controlsMovementTimeout = setTimeout(hideControls, 3000);
 };
 
+const handleMouseEnter = () => {
+  videoControls.classList.add("showing");
+};
+
 const handleMouseLeave = () => {
   controlTimeout = setTimeout(hideControls, 3000);
 };
@@ -107,14 +111,21 @@ const handleKeydownClick = (event) => {
   }
 };
 
+const handleEnded = () => {
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, { method: "post" });
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadedmetadata", handleLoadedmetadata);
 video.addEventListener("timeupdate", handleTimeupdate);
+video.addEventListener("ended", handleEnded);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullscreen);
 video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseenter", handleMouseEnter);
 video.addEventListener("mouseleave", handleMouseLeave);
 videoContainer.addEventListener("click", handlePlayClick);
 window.addEventListener("keydown", handleKeydownClick);
