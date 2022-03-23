@@ -1,9 +1,10 @@
 mixin video(video)
-    a(href=`/videos/${video.id}`).video_mixin
-        div.video_data
-        div.video_text
-            span.video_title=video.title
-            div
+    a(href=`/videos/${video.id}`).video-mixin
+        div.video-mixin-thumb(style=`background-image:url(${"/"+video.thumbUrl});background-size:cover; background-position:center;`)
+            //- img(src=video.thumbUrl, alt="thumbnail",style=` background-size:cover; background-position:center;`)
+        div.video-mixin-data
+            span.video-mixin-title=video.title
+            div.video-mixin-meta
                 span #{video.owner.name || user.username} • 
                 span #{video.meta.views} 회 
                 //- span.video_at=video.createdAt
