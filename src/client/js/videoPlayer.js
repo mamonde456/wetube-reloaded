@@ -10,6 +10,7 @@ const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
 let controlsMovementTimeout = null;
+let controlTimeout = null;
 let controlsMove;
 let volumeValue = 0.5;
 video.volume = volumeValue;
@@ -84,7 +85,7 @@ const handleFullscreen = () => {
 const hideControls = () => videoControls.classList.remove("showing");
 
 const handleMouseMove = () => {
-  if (controlTimeout === true) {
+  if (controlTimeout) {
     clearTimeout(controlTimeout);
     controlTimeout = null;
   }
