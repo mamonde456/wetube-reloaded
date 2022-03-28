@@ -1,6 +1,6 @@
 import Video from "../models/Video";
-import Comment from "../models/Comment";
 import User from "../models/User";
+import Comment from "../models/Comment";
 import { async } from "regenerator-runtime";
 
 export const home = async (req, res) => {
