@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/mamonde456/wetube-reloaded#readme",
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.17.0",
     "@ffmpeg/core": "^0.8.5",
     "@ffmpeg/ffmpeg": "^0.9.7",
     "bcrypt": "^5.0.1",
@@ -43,6 +42,7 @@
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.8",
     "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.7.1",
